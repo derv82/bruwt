@@ -177,6 +177,7 @@ def quarter(r):
     postdata = quote_plus(name) + '=' + quote_plus(QUARTER) + '&INPUTFORM=' + quote_plus(code)
     
     print ' Changing quarter to "' + seasons[i-1].split('">&nbsp;')[1] + '"...',
+    sys.stdout.flush()
     r = web('https://sdb.admin.washington.edu/students/uwnetid/register.asp', postdata)
     print 'changed to "' + between(r, '<BR><H1>', '</H1>')[0].replace('Registration - ', '') + '"\n'
     return r
@@ -229,6 +230,7 @@ def quarter(r):
   postdata = quote_plus(name) + '=' + quote_plus(quarter) + '&INPUTFORM=' + quote_plus(code)
   
   print ' Changing quarter to "' + seasons[i-1].split('">&nbsp;')[1] + '"...',
+  sys.stdout.flush()
   r = web('https://sdb.admin.washington.edu/students/uwnetid/register.asp', postdata)
   print 'changed to "' + between(r, '<BR><H1>', '</H1>')[0].replace('Registration - ', '') + '"\n'
   
@@ -238,6 +240,7 @@ def quarter(r):
 def register(r, sln):
   print_string = 'Attempting to register for ' + str(sln) + '...'
   print '\r ' + print_string,
+  sys.stdout.flush()
   postdata = ''
   
   pairs = between(r, 'TYPE=HIDDEN NAME=', '>')
@@ -301,8 +304,10 @@ def register(r, sln):
     print_string += ' Course is full'
     for i in xrange(WAIT_TIME * 60, 0, -1):
       print '\r ' + print_string + ' (waiting ' + hms(i) + ')',
+      sys.stdout.flush()
       time.sleep(1)
     print '\r ' + ' ' * (len(print_string + ' (waiting 00m00s)')),
+    sys.stdout.flush()
     return r
   
   if r.find('Invalid Schedule Line Number (SLN)') != -1:
@@ -349,10 +354,12 @@ def register(r, sln):
   if r.find('You do not have Javascript enabled') != -1:
     # we were logged out!
     print 'FAILURE! (Logged out)\n Logging back in .',
+    sys.stdout.flush()
     
     cj.clear() # clear the cookies and start over.
     
     print '\r Logging in...',
+    sys.stdout.flush()
     if not login(USERNAME, PASSWORD):
       # login failed
       print "\nUnable to login, exiting."
@@ -360,8 +367,10 @@ def register(r, sln):
     
     r = first()
     print '.',
+    sys.stdout.flush()
     r = second(r)
     print '.',
+    sys.stdout.flush()
     r = quarter(r)
     return r
     
@@ -416,6 +425,7 @@ def start():
     print ''
   
   print '\r Logging in...',
+  sys.stdout.flush()
   if not login(USERNAME, PASSWORD):
     # login failed
     # print "\nUnable to login, exiting."
@@ -423,11 +433,14 @@ def start():
   
   print ''
   print ' Loading registration page .',
+  sys.stdout.flush()
   
   r = first()
   print '.',
+  sys.stdout.flush()
   r = second(r)
   print '.',
+  sys.stdout.flush()
   r = quarter(r)
   
   while r != '':
